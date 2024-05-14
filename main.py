@@ -21,6 +21,4 @@ file.close()
 soup = BeautifulSoup(open('wallhaven.html','r'),'html.parser')
 data=soup.find_all(class_='lazyload')
 for i in data:
-    soup2 = BeautifulSoup(str(i),'html.parser')
-    img=soup2.img['src']
-    print(img)
+    print(i.get("data-src"))
