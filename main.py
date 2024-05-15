@@ -1,14 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
 import os
+from urllib.parse import urlparse
 params={
         'q':'id:5478',
         'categories':111,
         'purity':111,
-        'sorting':'date_added',
+        'sorting':'favorites',
         'order':'desc',
         'ai_art_filter':0,
-        'page':2
+        'page':1
 }
 header={
     'User-Agent':'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36',
@@ -21,4 +22,21 @@ file.close()
 soup = BeautifulSoup(open('wallhaven.html','r'),'html.parser')
 data=soup.find_all(class_='lazyload')
 for i in data:
-    print(i.get("data-src"))
+    img_url=i.get("data-src")
+    img_pathinfo=urlparse(img_url)
+    img_url=img_url.replace("small","full")
+    img_name=img_pathinfo.path[-10:]
+    f_img_name="wallhaven-"+img_name
+    img_url=img_url.replace(img_name,f_img_name)
+    img_url=img_url.replace("//th","//w")
+    print(img_url)
+    response_2=requests.get(url=img_url)
+    if response_2.status_code==404:
+        img_url=img_url.replace("jpg","png")
+        response_2=requests.get(url=img_url)
+        f_img_name=f_img_name.replace("jpg","png")
+    
+    l_img_name="./img/"+f_img_name
+    img_file=open(l_img_name,'wb')
+    img_file.write(response_2.content)
+    img_file.close()
