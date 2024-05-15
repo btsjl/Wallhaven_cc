@@ -35,7 +35,6 @@ for i in data:
         img_url=img_url.replace("jpg","png")
         response_2=requests.get(url=img_url)
         f_img_name=f_img_name.replace("jpg","png")
-    
     l_img_name="./img/"+f_img_name
     img_file=open(l_img_name,'wb')
     img_file.write(response_2.content)
